@@ -39,13 +39,22 @@ void run(const uint8_t *data, size_t size)
 		assert(memcmp(data_out, data + 1, data_out_len) == 0);
 	}
 
-	data_out = tal_arr(tmpctx, uint8_t, size);
+	data_out = tal_arr(tmpctx, uint8_t, size * 2);
 
 	/* This is also used as part of sign and check message. */
 	data_out_len = 0;
-	bech32_convert_bits(data_out, &data_out_len, 8, data, size, 5, 1);
-	data_out_len = 0;
-	bech32_convert_bits(data_out, &data_out_len, 8, data, size, 5, 0);
+	/* First conversion uses pad=1 to ensure all bits are captured. */
+	if (bech32_convert_bits(data_out, &data_out_len, 5, data, size, 8, 1)) {
+		uint8_t *deconv_data_out = tal_arr(tmpctx, uint8_t, size);
+		size_t deconv_data_out_len = 0;
+
+		/* Second uses pad=0 to discard padding bits during reconstruction. */
+		if (bech32_convert_bits(deconv_data_out, &deconv_data_out_len, 8,
+							data_out, data_out_len, 5, 0)) {
+			assert(deconv_data_out_len == size);
+			assert(memcmp(data, deconv_data_out, size) == 0);
+		}
+	}
 
 	addr = tal_arr(tmpctx, char, 73 + strlen(hrp_addr));
 	for (int wit_version = 0; wit_version <= 16; ++wit_version) {
