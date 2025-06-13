@@ -1,17 +1,9 @@
 #include "config.h"
 
-#include <bitcoin/chainparams.h>
 #include <bitcoin/privkey.h>
 #include <common/bech32.h>
 #include <common/bolt11.h>
-#include <common/features.h>
 #include <common/setup.h>
-#include <common/utils.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <tests/fuzz/libfuzz.h>
 
 // Default mutator defined by libFuzzer.
