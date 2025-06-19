@@ -131,6 +131,13 @@ int main(int argc, char *argv[])
 	len = tlv_span(wire, 0, 1, &start);
 	assert(start == 0);
 	assert(len == strlen("0010b8538094dbd70d8a0f0439d8e64f766f") / 2);
+
+	/* Simulate an empty tlvstream */
+	wire = tal_arr(tmpctx, u8, 0);
+	len = tlv_span(wire, 0, UINT64_MAX, &start);
+	assert(start == 0);
+	assert(len == 0);
+
 	common_shutdown();
 	return 0;
 }
