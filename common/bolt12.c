@@ -613,7 +613,8 @@ size_t tlv_span(const u8 *tlvstream, u64 minfield, u64 maxfield,
 	size_t tlvlen = tal_bytelen(tlvstream);
 	const u8 *start, *end;
 
-	start = end = NULL;
+	start = NULL;
+	end = tlvstream + tlvlen;
 	while (tlvlen) {
 		const u8 *before = cursor;
 		bigsize_t type = fromwire_bigsize(&cursor, &tlvlen);
